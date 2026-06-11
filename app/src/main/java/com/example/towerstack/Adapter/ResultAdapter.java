@@ -10,26 +10,42 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.towerstack.LetterModel;
 import com.example.towerstack.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResultAdapter extends ArrayAdapter<String> {
+public class ResultAdapter extends ArrayAdapter<LetterModel> {
     private Context myContext;
-    private ArrayList<String> arr;
-    public ResultAdapter(@NonNull Context context, int resource, @NonNull List<String> objects) {
+    private List<LetterModel> arr;
+    public ResultAdapter(@NonNull Context context, int resource, @NonNull List<LetterModel> objects) {
         super(context, resource, objects);
         this.myContext = context;
-        this.arr = new ArrayList<>(objects);
+        this.arr = objects;
     }
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent){
-        if(convertView == null){
-            LayoutInflater inflater = (LayoutInflater) myContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    @NonNull
+    @Override
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        if (convertView == null) {
+            LayoutInflater inflater = LayoutInflater.from(myContext);
             convertView = inflater.inflate(R.layout.item_result, parent, false);
         }
+
         TextView tvResult = convertView.findViewById(R.id.tvResult);
-        tvResult.setText(this.arr.get(position));
+
+        // 1. Lấy ra đối tượng LetterModel tại vị trí tương ứng
+        LetterModel item = this.arr.get(position);
+
+        // 2. ĐỔI CHỖ NÀY: Dùng lệnh .getText() để lấy chữ hiển thị lên ô vuông
+        tvResult.setText(item.getText());
+
+        if (item.getText().equals("")) {
+            convertView.setVisibility(View.INVISIBLE); // Ẩn ô đi tạm thời
+        } else {
+            convertView.setVisibility(View.VISIBLE);   // Hiện ô bình thường
+        }
+
         return convertView;
     }
 }

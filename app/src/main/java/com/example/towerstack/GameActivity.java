@@ -7,6 +7,8 @@ import android.widget.Adapter;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,10 +18,11 @@ import java.util.ArrayList;
 
 public class GameActivity extends AppCompatActivity {
     String dapan = "oanquan";
-    ArrayList<String> arrResult;
-    ArrayList<String> arrSuggest;
+    ArrayList<LetterModel> arrResult;
+    ArrayList<LetterModel> arrSuggest;
     LinearLayout lnResult;
     GridView gvSuggest;
+    ResultAdapter suggestAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,82 +33,112 @@ public class GameActivity extends AppCompatActivity {
         init();
         anhXa();
         hashData();
-        hienThi();
-        hienThiGoiY();
+        hienThiResult();
+        hienThiSuggest();
 
-        // Thêm đoạn này vào cuối hàm onCreate của em:
         gvSuggest.setOnItemClickListener((parent, view, position, id) -> {
-            // 1. Lấy chữ cái vừa được bấm ở bảng gợi ý
-            String chuCaiDuocChon = arrSuggest.get(position);
-
-            // 2. Tìm ô trống đầu tiên trong arrResult để điền vào
+            LetterModel selectedLetter = arrSuggest.get(position);
+            if (selectedLetter.equals("")) return;
             for (int i = 0; i < arrResult.size(); i++) {
-                if (arrResult.get(i).equals("")) { // Nếu ô này đang trống
-                    arrResult.set(i, chuCaiDuocChon); // Điền chữ vào mảng dữ liệu
-                    break; // Điền xong 1 ô thì dừng vòng lặp ngay
+                if (arrResult.get(i).getText().equals("")) {
+                    arrResult.get(i).setText(selectedLetter.getText());
+                    arrResult.get(i).setOriginalIndex(selectedLetter.getOriginalIndex());
+                    selectedLetter.setText("");
+                    suggestAdapter.notifyDataSetChanged();
+                    break;
                 }
             }
-
-            // 3. Ép giao diện hàng đáp án vẽ lại để cập nhật chữ mới vừa điền
-            hienThi();
+            hienThiResult();
+            checkResult();
         });
     }
 
-    private void anhXa (){
+    private void anhXa() {
         lnResult = findViewById(R.id.lnResult);
         gvSuggest = findViewById(R.id.gvSuggest);
     }
 
-    private void init(){
+    private void init() {
         arrResult = new ArrayList<>();
         arrSuggest = new ArrayList<>();
 
-        for (int i = 0; i < dapan.length(); i++) {
-            arrSuggest.add(String.valueOf(dapan.charAt(i)).toUpperCase());
+        int tongSoO = 14;
+        java.util.Random random = new java.util.Random();
+
+        ArrayList<String> tempLetters = new ArrayList<>();
+
+        for (int i = 0; i < tongSoO; i++) {
+            if (i < dapan.length()) {
+                tempLetters.add(String.valueOf(dapan.charAt(i)).toUpperCase());
+            } else {
+                int asciiCode = random.nextInt(90 - 65 + 1) + 65;
+                tempLetters.add(String.valueOf((char) asciiCode));
+            }
         }
 
-        java.util.Random random = new java.util.Random();
-        while (arrSuggest.size() < 14){
-            int asciiCode = random.nextInt(90 - 65 +1) +65;
-            String randomLetter = String.valueOf((char) asciiCode);
-            arrSuggest.add(randomLetter);
-        }
         java.util.Collections.shuffle(arrSuggest);
+
+        for (int i = 0; i < tempLetters.size(); i++) {
+            arrSuggest.add(new LetterModel(tempLetters.get(i), i));
+        }
     }
 
-    private void hienThi (){
+    private void hienThiResult() {
         lnResult.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
 
         for (int i = 0; i < arrResult.size(); i++) {
             View itemView = inflater.inflate(R.layout.item_result, lnResult, false);
             TextView tvResult = itemView.findViewById(R.id.tvResult);
-            tvResult.setText(arrResult.get(i));
+            tvResult.setText(arrResult.get(i).getText());
 
-            // --- THÊM ĐOẠN NÀY: Click vào ô đáp án để xóa chữ ---
-            final int index = i; // Khai báo biến final để dùng bên trong sự kiện click
+            final int index = i;
             itemView.setOnClickListener(v -> {
-                if (!arrResult.get(index).equals("")) { // Nếu ô này đang có chữ
-                    arrResult.set(index, ""); // Đặt lại thành ô trống
-                    hienThi(); // Vẽ lại hàng đáp án
+                LetterModel cellClicked = arrResult.get(index);
+                if (!cellClicked.getText().equals("")) {
+                    int targetIndex = cellClicked.getOriginalIndex();
+
+                    arrSuggest.get(targetIndex).setText(cellClicked.getText());
+                    suggestAdapter.notifyDataSetChanged();
+                    cellClicked.setText("");
+                    cellClicked.setOriginalIndex(-1);
+
+                    hienThiResult();
                 }
             });
             lnResult.addView(itemView);
         }
     }
-    private void hienThiGoiY(){
+
+    private void hienThiSuggest() {
         gvSuggest.setNumColumns(7);
         int density = (int) getResources().getDisplayMetrics().density;
-        // Tăng lên một chút để vừa khít với kích thước ô chữ mới
         gvSuggest.setColumnWidth(42 * density);
-        gvSuggest.setAdapter(new ResultAdapter(this, 0, arrSuggest));
+        suggestAdapter = new ResultAdapter(this, 0, arrSuggest);
+        gvSuggest.setAdapter(suggestAdapter);
     }
-    private void hashData () {
+
+    private void hashData() {
         arrResult.clear();
-        for(int i=0; i<dapan.length(); i++){
-            arrResult.add("");
+        for (int i = 0; i < dapan.length(); i++) {
+            arrResult.add(new LetterModel("", -1));
         }
-
     }
 
+    private void checkResult() {
+        for (int i = 0; i < arrResult.size(); i++) {
+            if (arrResult.get(i).getText().equals("")) {
+                return;
+            }
+        }
+        StringBuilder s = new StringBuilder();
+        for (LetterModel letter : arrResult) {
+            s.append(letter.getText());
+        }
+        if (s.toString().equalsIgnoreCase(dapan)) {
+            Toast.makeText(this, "You're right! Bạn giỏi quá 🎉", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Sai rồi, chúc bạn may mắn lần sau!", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
