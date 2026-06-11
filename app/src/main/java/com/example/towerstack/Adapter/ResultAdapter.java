@@ -10,10 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.towerstack.LetterModel;
+import com.example.towerstack.Model.LetterModel;
 import com.example.towerstack.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ResultAdapter extends ArrayAdapter<LetterModel> {

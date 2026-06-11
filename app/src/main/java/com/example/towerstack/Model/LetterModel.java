@@ -1,4 +1,4 @@
-package com.example.towerstack;
+package com.example.towerstack.Model;
 
 public class LetterModel {
     private String text;

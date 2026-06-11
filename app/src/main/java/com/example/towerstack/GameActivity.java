@@ -3,7 +3,6 @@ package com.example.towerstack;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -13,6 +12,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.towerstack.Adapter.ResultAdapter;
+import com.example.towerstack.Model.LetterModel;
 
 import java.util.ArrayList;
 

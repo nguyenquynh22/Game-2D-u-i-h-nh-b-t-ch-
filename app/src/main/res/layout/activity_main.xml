@@ -3,34 +3,34 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background">
-    <LinearLayout
+    <RelativeLayout
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="start"
         android:padding="12dp">
-
-        <Button
-            android:id="@+id/btnScore"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:text="100"
-            android:textStyle="bold"
-            android:textColor="#FF7700"
-            android:background="@drawable/button" />
-        <Space
-            android:layout_width="7dp"
-            android:layout_height="0dp"/>
-        <Button
+        <ImageButton
             android:id="@+id/btnSettings"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:text="cai"
-            android:textStyle="bold"
-            android:textColor="#FF7700"
-            android:background="@drawable/button" />
-    </LinearLayout>
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:contentDescription="Nút cài đặt trò chơi"
+            android:background="@drawable/button"
+            android:src="@drawable/ic_settings"
+            android:scaleType="fitCenter" android:padding="12dp" />
 
+        <Button
+            android:id="@+id/btnScore"
+            android:layout_width="wrap_content" android:layout_height="48dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:text="100"
+            android:textColor="#FF7700"
+            android:textStyle="bold"
+            android:background="@drawable/button"
+
+            android:drawableLeft="@drawable/ic_coin" android:drawableStart="@drawable/ic_coin" android:drawablePadding="6dp" android:paddingHorizontal="12dp" />
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

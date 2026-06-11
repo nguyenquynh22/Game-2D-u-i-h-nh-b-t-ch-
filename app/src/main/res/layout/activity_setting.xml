@@ -4,6 +4,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_play"
     android:orientation="vertical"
     android:padding="16dp"
     tools:context=".SettingActivity">
@@ -15,13 +16,11 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <Button
+        <ImageButton
             android:id="@+id/btnBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="←"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:layout_width="35dp" android:layout_height="32dp"
+            android:background="@drawable/button" android:src="@drawable/ic_back" android:scaleType="fitCenter"
+            android:padding="8dp" android:contentDescription="Nút quay lại màn hình trước" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -49,7 +48,7 @@
 
         <TextView
             android:id="@+id/edtPlayerName"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="KeziahD"
             android:inputType="textPersonName" />
@@ -76,6 +75,7 @@
             android:layout_height="wrap_content"
             android:checked="true" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -107,9 +107,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginBottom="4dp"
             android:text="Mẹo chơi"
-            android:layout_gravity="center"
             android:textColor="#5D4037"
             android:textSize="16sp"
             android:textStyle="bold" />
