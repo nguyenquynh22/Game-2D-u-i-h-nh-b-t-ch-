@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:padding="12dp">
         <ImageButton
-            android:id="@+id/btnSettings"
+            android:id="@+id/ibtnSettings"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_alignParentLeft="true"

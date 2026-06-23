@@ -1,9 +1,11 @@
 package com.example.towerstack;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +25,7 @@ public class GameActivity extends AppCompatActivity {
     LinearLayout lnResult;
     GridView gvSuggest;
     ResultAdapter suggestAdapter;
+    ImageButton ibtnBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +33,21 @@ public class GameActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_game);
 
+        ibtnBack = findViewById(R.id.ibtnBack);
+
         init();
         anhXa();
         hashData();
         hienThiResult();
         hienThiSuggest();
+
+        ibtnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GameActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
         gvSuggest.setOnItemClickListener((parent, view, position, id) -> {
             LetterModel selectedLetter = arrSuggest.get(position);

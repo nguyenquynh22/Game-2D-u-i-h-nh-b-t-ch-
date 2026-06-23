@@ -20,7 +20,7 @@
         android:paddingTop="10dp">
 
         <ImageButton
-            android:id="@+id/btnBack"
+            android:id="@+id/ibtnBack"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:background="@drawable/button"
