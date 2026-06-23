@@ -23,12 +23,6 @@ public class SettingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_setting);
         btnBack = findViewById(R.id.btnBack);
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SettingActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
+        btnBack.setOnClickListener(v -> finish());
     }
 }

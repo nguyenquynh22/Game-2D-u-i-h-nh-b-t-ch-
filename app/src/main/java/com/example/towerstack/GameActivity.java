@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -19,7 +20,7 @@ import com.example.towerstack.Model.LetterModel;
 import java.util.ArrayList;
 
 public class GameActivity extends AppCompatActivity {
-    String dapan = "oanquan";
+    String dapan = "quạt quậy";
     ArrayList<LetterModel> arrResult;
     ArrayList<LetterModel> arrSuggest;
     LinearLayout lnResult;
@@ -33,25 +34,19 @@ public class GameActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_game);
 
-        ibtnBack = findViewById(R.id.ibtnBack);
-
         init();
         anhXa();
         hashData();
         hienThiResult();
         hienThiSuggest();
 
-        ibtnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(GameActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
+        ibtnBack.setOnClickListener(v -> {
+            finish();
         });
 
         gvSuggest.setOnItemClickListener((parent, view, position, id) -> {
             LetterModel selectedLetter = arrSuggest.get(position);
-            if (selectedLetter.equals("")) return;
+            if (selectedLetter.getText().isEmpty()) return;
             for (int i = 0; i < arrResult.size(); i++) {
                 if (arrResult.get(i).getText().equals("")) {
                     arrResult.get(i).setText(selectedLetter.getText());
@@ -69,6 +64,7 @@ public class GameActivity extends AppCompatActivity {
     private void anhXa() {
         lnResult = findViewById(R.id.lnResult);
         gvSuggest = findViewById(R.id.gvSuggest);
+        ibtnBack = findViewById(R.id.ibtnBack);
     }
 
     private void init() {
@@ -80,11 +76,13 @@ public class GameActivity extends AppCompatActivity {
 
         ArrayList<String> tempLetters = new ArrayList<>();
 
+        String dapanNoSpace = dapan.replace(" ", "").toUpperCase();
+
         for (int i = 0; i < tongSoO; i++) {
-            if (i < dapan.length()) {
-                tempLetters.add(String.valueOf(dapan.charAt(i)).toUpperCase());
+            if (i < dapanNoSpace.length()) {
+                tempLetters.add(String.valueOf(dapanNoSpace.charAt(i)));
             } else {
-                int asciiCode = random.nextInt(90 - 65 + 1) + 65;
+                int asciiCode = random.nextInt(90 - 65 + 1) + 65; // A-Z
                 tempLetters.add(String.valueOf((char) asciiCode));
             }
         }
@@ -96,30 +94,57 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    private void hashData() {
+        arrResult.clear();
+        String dapanNoSpace = dapan.replace(" ", "");
+        for (int i = 0; i < dapanNoSpace.length(); i++) {
+            arrResult.add(new LetterModel("", -1));
+        }
+    }
+
     private void hienThiResult() {
         lnResult.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
+        lnResult.setOrientation(LinearLayout.VERTICAL);
 
-        for (int i = 0; i < arrResult.size(); i++) {
-            View itemView = inflater.inflate(R.layout.item_result, lnResult, false);
-            TextView tvResult = itemView.findViewById(R.id.tvResult);
-            tvResult.setText(arrResult.get(i).getText());
+        String[] words = dapan.toUpperCase().split(" ");
+        int globalIndex = 0;
+        for (int w = 0; w < words.length; w++) {
+            String currentWord = words[w];
+            LinearLayout wordLine = new LinearLayout(this);
+            wordLine.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT));
+            wordLine.setGravity(android.view.Gravity.CENTER);
+            wordLine.setOrientation(LinearLayout.HORIZONTAL);
+            if (w > 0) {
+                wordLine.setPadding(0, 16, 0, 0);
+            }
+            lnResult.addView(wordLine);
 
-            final int index = i;
-            itemView.setOnClickListener(v -> {
-                LetterModel cellClicked = arrResult.get(index);
-                if (!cellClicked.getText().equals("")) {
-                    int targetIndex = cellClicked.getOriginalIndex();
+            for (int i = 0; i < currentWord.length(); i++) {
+                View itemView = inflater.inflate(R.layout.item_result, wordLine, false);
+                TextView tvResult = itemView.findViewById(R.id.tvResult);
 
-                    arrSuggest.get(targetIndex).setText(cellClicked.getText());
-                    suggestAdapter.notifyDataSetChanged();
-                    cellClicked.setText("");
-                    cellClicked.setOriginalIndex(-1);
+                tvResult.setText(arrResult.get(globalIndex).getText());
 
-                    hienThiResult();
-                }
-            });
-            lnResult.addView(itemView);
+                final int targetIndex = globalIndex;
+                itemView.setOnClickListener(v -> {
+                    LetterModel cellClicked = arrResult.get(targetIndex);
+                    if (!cellClicked.getText().equals("")) {
+                        int originalSuggestIndex = cellClicked.getOriginalIndex();
+
+                        arrSuggest.get(originalSuggestIndex).setText(cellClicked.getText());
+                        suggestAdapter.notifyDataSetChanged();
+                        cellClicked.setText("");
+                        cellClicked.setOriginalIndex(-1);
+
+                        hienThiResult();
+                    }
+                });
+                wordLine.addView(itemView);
+                globalIndex++;
+            }
         }
     }
 
@@ -131,24 +156,22 @@ public class GameActivity extends AppCompatActivity {
         gvSuggest.setAdapter(suggestAdapter);
     }
 
-    private void hashData() {
-        arrResult.clear();
-        for (int i = 0; i < dapan.length(); i++) {
-            arrResult.add(new LetterModel("", -1));
-        }
-    }
 
     private void checkResult() {
+        // Kiểm tra xem người chơi điền đủ hết các ô chưa
         for (int i = 0; i < arrResult.size(); i++) {
             if (arrResult.get(i).getText().equals("")) {
                 return;
             }
         }
+
         StringBuilder s = new StringBuilder();
         for (LetterModel letter : arrResult) {
             s.append(letter.getText());
         }
-        if (s.toString().equalsIgnoreCase(dapan)) {
+        String cleanDapan = dapan.replace(" ", "").toUpperCase();
+
+        if (s.toString().equalsIgnoreCase(cleanDapan)) {
             Toast.makeText(this, "You're right! Bạn giỏi quá 🎉", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Sai rồi, chúc bạn may mắn lần sau!", Toast.LENGTH_SHORT).show();

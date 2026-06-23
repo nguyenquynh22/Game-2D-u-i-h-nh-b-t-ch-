@@ -4,9 +4,17 @@ public class QuestionModel {
     private int level;
     private String resourceImg;
     private String answer;
+    private int rewardCoin;
 
 
-    public QuestionModel(int level, String resourceImg, String answer) {
+    public QuestionModel(int level, String resourceImg, String answer, int rewardCoin) {
+        this.level = level;
+        this.resourceImg = resourceImg;
+        this.answer = answer.toUpperCase();
+        this.rewardCoin = rewardCoin;
+    }
+
+    public QuestionModel(int level, String img, String ans) {
         this.level = level;
         this.resourceImg = resourceImg;
         this.answer = answer.toUpperCase();
@@ -35,5 +43,13 @@ public class QuestionModel {
 
     public void setAnswer(String answer) {
         this.answer = answer;
+    }
+
+    public int getRewardCoin() {
+        return rewardCoin;
+    }
+
+    public void setRewardCoin(int rewardCoin) {
+        this.rewardCoin = rewardCoin;
     }
 }
