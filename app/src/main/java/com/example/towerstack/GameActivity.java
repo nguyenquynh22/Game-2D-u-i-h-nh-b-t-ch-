@@ -17,7 +17,7 @@ import com.example.towerstack.Model.LetterModel;
 import java.util.ArrayList;
 
 public class GameActivity extends AppCompatActivity {
-    String dapan = "oanquan";
+    String dapan = "quạt quậy";
     ArrayList<LetterModel> arrResult;
     ArrayList<LetterModel> arrSuggest;
     LinearLayout lnResult;
