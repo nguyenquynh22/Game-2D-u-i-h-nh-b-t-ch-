@@ -13,12 +13,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
+        android:layout_marginTop="15dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/btnBack"
-            android:layout_width="35dp" android:layout_height="32dp"
+            android:layout_width="35dp" android:layout_height="35dp"
             android:background="@drawable/button" android:src="@drawable/ic_back" android:scaleType="fitCenter"
             android:padding="8dp" android:contentDescription="Nút quay lại màn hình trước" />
 
@@ -71,6 +72,7 @@
             android:textStyle="bold" />
 
         <Switch
+            android:id="@+id/swSound"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true" />
@@ -93,7 +95,7 @@
             android:textStyle="bold" />
 
         <Switch
-            android:id="@+id/swMusic"
+            android:id="@+id/swVibrate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true" />

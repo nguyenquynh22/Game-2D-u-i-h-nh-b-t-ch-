@@ -1,28 +1,54 @@
 package com.example.towerstack;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.Switch;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.activity.EdgeToEdge;
+
+import com.example.towerstack.Database.DatabaseHelper;
+import com.example.towerstack.Model.UserModel;
 
 public class SettingActivity extends AppCompatActivity {
-    Button btnBack;
 
-    @SuppressLint("WrongViewCast")
+    ImageButton btnBack;
+    Switch swSound, swVibrate;
+    DatabaseHelper databaseHelper;
+    UserModel userModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_setting);
+
         btnBack = findViewById(R.id.btnBack);
+        swSound = findViewById(R.id.swSound);
+        swVibrate = findViewById(R.id.swVibrate);
+
+        databaseHelper = new DatabaseHelper(this);
+        userModel = databaseHelper.getUserInfo();
+
+        if (userModel != null) {
+            swSound.setChecked(userModel.getIsSound() == 1);
+            swVibrate.setChecked(userModel.getIsVibrate() == 1);
+        }
 
         btnBack.setOnClickListener(v -> finish());
+
+        swSound.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            int sound = isChecked ? 1 : 0;
+            int vibrate = swVibrate.isChecked() ? 1 : 0;
+
+            databaseHelper.updateSettings(sound, vibrate);
+        });
+
+        swVibrate.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            int sound = swSound.isChecked() ? 1 : 0;
+            int vibrate = isChecked ? 1 : 0;
+
+            databaseHelper.updateSettings(sound, vibrate);
+        });
     }
 }

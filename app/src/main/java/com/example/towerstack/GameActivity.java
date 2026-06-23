@@ -18,6 +18,16 @@ import com.example.towerstack.Adapter.ResultAdapter;
 import com.example.towerstack.Model.LetterModel;
 
 import java.util.ArrayList;
+import android.media.MediaPlayer;
+
+import com.example.towerstack.Database.DatabaseHelper;
+import com.example.towerstack.Model.UserModel;
+
+import android.content.Context;
+import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.os.VibratorManager;
 
 public class GameActivity extends AppCompatActivity {
     String dapan = "quạt quậy";
@@ -27,12 +37,28 @@ public class GameActivity extends AppCompatActivity {
     GridView gvSuggest;
     ResultAdapter suggestAdapter;
     ImageButton ibtnBack;
+    DatabaseHelper databaseHelper;
+    UserModel userModel;
+
+    MediaPlayer musicPlayer;
+    MediaPlayer coinPlayer;
+    MediaPlayer failPlayer;
+
+    boolean isSoundOn = true;
+    boolean isVibrateOn = true;
+    Vibrator vibrator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_game);
+        databaseHelper = new DatabaseHelper(this);
+
+        taoAmThanh();
+        kiemTraCaiDatAmThanh();
+        taoRung();
+        kiemTraCaiDatRung();
 
         init();
         anhXa();
@@ -172,9 +198,150 @@ public class GameActivity extends AppCompatActivity {
         String cleanDapan = dapan.replace(" ", "").toUpperCase();
 
         if (s.toString().equalsIgnoreCase(cleanDapan)) {
+            phatAmThanh(coinPlayer);
+            rung(120);
             Toast.makeText(this, "You're right! Bạn giỏi quá 🎉", Toast.LENGTH_SHORT).show();
         } else {
+            rung(400);
+            phatAmThanh(failPlayer);
             Toast.makeText(this, "Sai rồi, chúc bạn may mắn lần sau!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void taoAmThanh() {
+        musicPlayer = MediaPlayer.create(this, R.raw.music);
+        coinPlayer = MediaPlayer.create(this, R.raw.coin);
+        failPlayer = MediaPlayer.create(this, R.raw.fail);
+
+        if (musicPlayer != null) {
+            musicPlayer.setLooping(true);
+            musicPlayer.setVolume(0.5f, 0.5f);
+        }
+    }
+
+    private void kiemTraCaiDatAmThanh() {
+        userModel = databaseHelper.getUserInfo();
+
+        if (userModel != null) {
+            isSoundOn = userModel.getIsSound() == 1;
+        } else {
+            isSoundOn = true;
+        }
+
+        if (isSoundOn) {
+            batNhacNen();
+        } else {
+            tatNhacNen();
+        }
+    }
+
+    private void batNhacNen() {
+        if (musicPlayer != null && !musicPlayer.isPlaying()) {
+            musicPlayer.start();
+        }
+    }
+
+    private void tatNhacNen() {
+        if (musicPlayer != null && musicPlayer.isPlaying()) {
+            musicPlayer.pause();
+            musicPlayer.seekTo(0);
+        }
+    }
+
+    private void phatAmThanh(MediaPlayer mediaPlayer) {
+        if (!isSoundOn) return;
+        if (mediaPlayer == null) return;
+
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+            mediaPlayer.seekTo(0);
+        }
+
+        mediaPlayer.start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        kiemTraCaiDatAmThanh();
+        kiemTraCaiDatRung();
+        userModel = databaseHelper.getUserInfo();
+
+        if (userModel != null && userModel.getIsSound() == 1) {
+            if (musicPlayer != null && !musicPlayer.isPlaying()) {
+                musicPlayer.start();
+            }
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (musicPlayer != null && musicPlayer.isPlaying()) {
+            musicPlayer.pause();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (musicPlayer != null) {
+            musicPlayer.release();
+            musicPlayer = null;
+        }
+
+        if (coinPlayer != null) {
+            coinPlayer.release();
+            coinPlayer = null;
+        }
+
+        if (failPlayer != null) {
+            failPlayer.release();
+            failPlayer = null;
+        }
+    }
+    private void taoRung() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            VibratorManager vibratorManager =
+                    (VibratorManager) getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+
+            if (vibratorManager != null) {
+                vibrator = vibratorManager.getDefaultVibrator();
+            }
+        } else {
+            vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        }
+    }
+
+    private void kiemTraCaiDatRung() {
+        userModel = databaseHelper.getUserInfo();
+
+        if (userModel != null) {
+            isVibrateOn = userModel.getIsVibrate() == 1;
+        } else {
+            isVibrateOn = true;
+        }
+    }
+
+    private void rung(long thoiGian) {
+        if (!isVibrateOn) {
+            Toast.makeText(this, "Rung đang OFF trong cài đặt", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Toast.makeText(this, "Đã gọi lệnh rung", Toast.LENGTH_SHORT).show();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(
+                    VibrationEffect.createOneShot(
+                            thoiGian,
+                            VibrationEffect.DEFAULT_AMPLITUDE
+                    )
+            );
+        } else {
+            vibrator.vibrate(thoiGian);
         }
     }
 }

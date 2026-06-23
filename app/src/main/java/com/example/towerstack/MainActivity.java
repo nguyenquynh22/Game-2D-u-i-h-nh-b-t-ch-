@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         btnStart = findViewById(R.id.btnStart);
-        btnSettings = findViewById(R.id.btnSettings);
+        btnSettings = findViewById(R.id.ibtnSettings);
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
