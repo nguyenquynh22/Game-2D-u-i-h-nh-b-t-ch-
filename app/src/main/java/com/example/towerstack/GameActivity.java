@@ -67,11 +67,13 @@ public class GameActivity extends AppCompatActivity {
 
         ArrayList<String> tempLetters = new ArrayList<>();
 
+        String dapanNoSpace = dapan.replace(" ", "").toUpperCase();
+
         for (int i = 0; i < tongSoO; i++) {
-            if (i < dapan.length()) {
-                tempLetters.add(String.valueOf(dapan.charAt(i)).toUpperCase());
+            if (i < dapanNoSpace.length()) {
+                tempLetters.add(String.valueOf(dapanNoSpace.charAt(i)));
             } else {
-                int asciiCode = random.nextInt(90 - 65 + 1) + 65;
+                int asciiCode = random.nextInt(90 - 65 + 1) + 65; // A-Z
                 tempLetters.add(String.valueOf((char) asciiCode));
             }
         }
@@ -86,11 +88,35 @@ public class GameActivity extends AppCompatActivity {
     private void hienThiResult() {
         lnResult.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
+        lnResult.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout currentLine = new LinearLayout(this);
+        currentLine.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+        currentLine.setGravity(android.view.Gravity.CENTER);
+        currentLine.setOrientation(LinearLayout.HORIZONTAL);
+        lnResult.addView(currentLine);
 
         for (int i = 0; i < arrResult.size(); i++) {
-            View itemView = inflater.inflate(R.layout.item_result, lnResult, false);
+            LetterModel letter = arrResult.get(i);
+
+            if (letter.getText().equals("SPACE")) {
+                // 🌟 Gặp khoảng trắng -> Tạo một dòng mới tinh ném vào lnResult
+                currentLine = new LinearLayout(this);
+                currentLine.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT));
+                currentLine.setGravity(android.view.Gravity.CENTER);
+                currentLine.setOrientation(LinearLayout.HORIZONTAL);
+                currentLine.setPadding(0, 10, 0, 0); // Khoảng cách giữa dòng trên và dòng dưới
+                lnResult.addView(currentLine);
+                continue; // Bỏ qua không vẽ ô chữ cho dấu cách
+            }
+
+            View itemView = inflater.inflate(R.layout.item_result, currentLine, false);
             TextView tvResult = itemView.findViewById(R.id.tvResult);
-            tvResult.setText(arrResult.get(i).getText());
+            tvResult.setText(letter.getText());
 
             final int index = i;
             itemView.setOnClickListener(v -> {
@@ -103,7 +129,7 @@ public class GameActivity extends AppCompatActivity {
                     cellClicked.setText("");
                     cellClicked.setOriginalIndex(-1);
 
-                    hienThiResult();
+                    hienThiResult(); // Vẽ lại giao diện sau khi thu hồi chữ
                 }
             });
             lnResult.addView(itemView);
@@ -121,21 +147,34 @@ public class GameActivity extends AppCompatActivity {
     private void hashData() {
         arrResult.clear();
         for (int i = 0; i < dapan.length(); i++) {
-            arrResult.add(new LetterModel("", -1));
+            char c = dapan.charAt(i);
+            if(c == ' '){
+                arrResult.add(new LetterModel("SPACE", -2));
+            } else{
+                arrResult.add(new LetterModel("", -1));
+            }
         }
     }
 
     private void checkResult() {
+        // Kiểm tra xem người chơi điền đủ hết các ô chưa
         for (int i = 0; i < arrResult.size(); i++) {
             if (arrResult.get(i).getText().equals("")) {
-                return;
+                return; // Vẫn còn ô trống chưa điền
             }
         }
+
         StringBuilder s = new StringBuilder();
         for (LetterModel letter : arrResult) {
-            s.append(letter.getText());
+            if (letter.getText().equals("SPACE")) {
+                s.append(" "); // Trả lại khoảng trắng
+            } else {
+                s.append(letter.getText());
+            }
         }
-        if (s.toString().equalsIgnoreCase(dapan)) {
+
+        // So sánh (Xóa bỏ khoảng trắng thừa nếu có và so khớp không phân biệt hoa thường)
+        if (s.toString().equalsIgnoreCase(dapan.replace(" ", ""))) {
             Toast.makeText(this, "You're right! Bạn giỏi quá 🎉", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Sai rồi, chúc bạn may mắn lần sau!", Toast.LENGTH_SHORT).show();
