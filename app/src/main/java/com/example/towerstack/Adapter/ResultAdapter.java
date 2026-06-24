@@ -18,11 +18,13 @@ import java.util.List;
 public class ResultAdapter extends ArrayAdapter<LetterModel> {
     private Context myContext;
     private List<LetterModel> arr;
+
     public ResultAdapter(@NonNull Context context, int resource, @NonNull List<LetterModel> objects) {
         super(context, resource, objects);
         this.myContext = context;
         this.arr = objects;
     }
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -32,17 +34,14 @@ public class ResultAdapter extends ArrayAdapter<LetterModel> {
         }
 
         TextView tvResult = convertView.findViewById(R.id.tvResult);
-
-        // 1. Lấy ra đối tượng LetterModel tại vị trí tương ứng
         LetterModel item = this.arr.get(position);
 
-        // 2. ĐỔI CHỖ NÀY: Dùng lệnh .getText() để lấy chữ hiển thị lên ô vuông
         tvResult.setText(item.getText());
 
         if (item.getText().equals("")) {
-            convertView.setVisibility(View.INVISIBLE); // Ẩn ô đi tạm thời
+            tvResult.setVisibility(View.INVISIBLE);
         } else {
-            convertView.setVisibility(View.VISIBLE);   // Hiện ô bình thường
+            tvResult.setVisibility(View.VISIBLE);
         }
 
         return convertView;

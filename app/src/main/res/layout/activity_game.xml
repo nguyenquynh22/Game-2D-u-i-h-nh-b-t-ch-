@@ -44,6 +44,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tvLevel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="90"
@@ -73,9 +74,10 @@
         android:paddingHorizontal="10dp">
 
         <ImageView
+            android:id="@+id/imgQuestion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/img"
+            android:src="@drawable/oanquan"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter" />
     </RelativeLayout>
@@ -86,7 +88,7 @@
         android:layout_height="0dp"
         android:layout_weight="1.5"
         android:gravity="center"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:padding="5dp"></LinearLayout>
 
     <LinearLayout
@@ -116,24 +118,71 @@
         android:paddingHorizontal="20dp"
         android:paddingBottom="20dp">
 
-        <Button
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Gợi ý"
-            app:icon="@drawable/baseline_lightbulb_24"
-            app:iconGravity="textStart"
-            app:iconPadding="8dp" />
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/btnGoiY"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Gợi ý"
+                app:icon="@drawable/baseline_lightbulb_24"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"
+                android:background="@drawable/button"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/badge_coin"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="2dp"
+                android:text="-30 Xu"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:elevation="10dp"/>
+        </RelativeLayout>
 
         <Space
             android:layout_width="20dp"
             android:layout_height="0dp" />
 
-        <Button
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Bỏ qua" />
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/btnBoQua"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Bỏ qua"
+                android:background="@drawable/button"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/badge_coin"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="2dp"
+                android:text="-50 Xu"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:elevation="10dp"/>
+        </RelativeLayout>
+
     </LinearLayout>
 
 </LinearLayout>

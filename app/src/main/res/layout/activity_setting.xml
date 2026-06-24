@@ -19,7 +19,7 @@
 
         <ImageButton
             android:id="@+id/btnBack"
-            android:layout_width="35dp" android:layout_height="35dp"
+            android:layout_width="48dp" android:layout_height="48dp"
             android:background="@drawable/button" android:src="@drawable/ic_back" android:scaleType="fitCenter"
             android:padding="8dp" android:contentDescription="Nút quay lại màn hình trước" />
 
@@ -47,18 +47,35 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/edtPlayerName"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="KeziahD"
-            android:inputType="textPersonName" />
+            android:gravity="center_vertical">
+            <TextView
+                android:id="@+id/edtPlayerName"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:gravity="center_vertical"
+                android:hint="KeziahD"
+                android:textSize="18dp"
+                android:inputType="textPersonName" />
+
+            <ImageButton
+                android:id="@+id/ibtnEdit"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="Edit player name"
+                android:scaleType="fitCenter"
+                android:padding="8dp"
+                android:src="@drawable/ic_edit" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -75,6 +92,8 @@
             android:id="@+id/swSound"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
             android:checked="true" />
     </LinearLayout>
 
@@ -98,6 +117,8 @@
             android:id="@+id/swVibrate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minWidth="48dp"
+            android:minHeight="48dp"
             android:checked="true" />
     </LinearLayout>
 
